@@ -5,21 +5,28 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _gameObject;
+    [SerializeField] private BlopBot _blopBot;
     [SerializeField] private Vector2 _firstPosition;
     [SerializeField] private float _interval;
 
-    private float _timer;
+    private float _minPosition = -6;
+    private float _maxPosition = 6;
+    private int _countOfEnemies = 5;
 
-    private void Update()
+    private void Start()
     {
-        _timer += Time.deltaTime;
+        StartCoroutine(SpawnEnemies());
+    }
 
-        if (_timer >= _interval)
+    private IEnumerator SpawnEnemies()
+    {
+        var waitForIntervalSeconds = new WaitForSeconds(_interval);
+
+        for (int i = 0; i < _countOfEnemies; i++)
         {
-            Instantiate(_gameObject, _firstPosition, Quaternion.identity);
-            _timer -= _interval;
-            _firstPosition.x += Random.Range(-5, 5);
+            Instantiate(_blopBot, _firstPosition, Quaternion.identity);
+            _firstPosition.x += Random.Range(_minPosition, _maxPosition);
+            yield return waitForIntervalSeconds;
         }
     }
 }
